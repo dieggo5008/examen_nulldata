@@ -1,0 +1,125 @@
+<div class="row">
+	<h2>Examen Null Data.</h2>
+	<hr>
+	<div class="col-md-4 col-sm-4">
+		<button type="button" (click)="nuevoUsuario()" class="btn btn-primary" >Nuevo</button>
+		<form #form="ngForm" (ngSubmit)="form.valid ? !isUpdate ? guardarUsuario(): actualizarUsuario(): ''" novalidate>
+			<div class="form-group">
+				<label>Nombre:</label>
+				<input [(ngModel)]="usuario.nombre" type="text" name="nombre" class="form-control" required #nombre="ngModel">
+			</div>
+			<div *ngIf="nombre.errors && form.submitted">
+				<div [hidden]="!nombre.errors.required" style="color: red;">
+					El nombre es requerido.
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label>Email:</label>
+				<input [(ngModel)]="usuario.email" type="text" name="email" class="form-control" required [pattern]="emailPattern" #email="ngModel">
+			</div>
+			<div *ngIf="email.errors && form.submitted">
+				<div [hidden]="!email.errors.required" style="color: red;">
+					El email es requerido.
+				</div>
+				<div [hidden]="!email.errors.pattern" style="color: red;">
+					El formato del email es invalido.
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label>Fecha de nacimiento:</label>
+				<input [(ngModel)]="usuario.fecha_nacimiento" required type="date" name="fecha" class="form-control" #fecha="ngModel">
+			</div> 
+			<div *ngIf="fecha.errors && form.submitted">
+				<div [hidden]="!fecha.errors.required" style="color: red;">
+					La fecha es requerida.
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label>Estado:</label>
+				<input [(ngModel)]="usuario.estado" type="text" name="estado" class="form-control" required #estado="ngModel">
+			</div>
+			<div *ngIf="estado.errors && form.submitted">
+				<div [hidden]="!estado.errors.required" style="color: red;">
+					El estado es requerido.
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label>Municipio o Delegación:</label>
+				<input [(ngModel)]="usuario.municipio" type="text" name="municipio" class="form-control" required #municipio="ngModel">
+			</div>
+			<div *ngIf="municipio.errors && form.submitted">
+				<div [hidden]="!municipio.errors.required" style="color: red;">
+					El municipio es requerido.
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label>direccion:</label>
+				<input [(ngModel)]="usuario.calle" type="text" name="calle" class="form-control" required #calle="ngModel">
+			</div>
+			<div *ngIf="calle.errors && form.submitted">
+				<div [hidden]="!calle.errors.required" style="color: red;">
+					La direccion es requerida.
+				</div>
+			</div>
+			
+			
+			<button *ngIf="isUpdate" type="submit" class="btn btn-default">Actualizar</button>
+			<button *ngIf="!isUpdate" type="submit" class="btn btn-default">Guardar</button>
+
+		</form>
+	</div>
+	<div class="col-md-8 col-sm-8">
+		<table class="table table-hover">
+		    <thead>
+		      <tr>
+		        <th>Nombre</th>
+		        <th>Email</th>
+		        <th>Fecha de nacimiento</th>
+		        <th>Direccion</th>
+		        <th>Eliminar</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		      <tr *ngFor="let usuario of usuarios; let i = index;" (click)="direccionUsuario(usuario, i)">
+		        <td>{{usuario.nombre}}</td>
+		        <td>{{usuario.email}}</td>
+		        <td>{{usuario.fecha_nacimiento | date: 'dd/MM/yyyy'}}</td>
+		        <td>{{usuario.calle}}, {{usuario.municipio}}, {{usuario.estado}}</td>
+		        <td>
+		        	<button (click)="eliminarUsuario(i)" class="btn btn-danger">Eliminar</button>
+		        </td>
+		      </tr>
+		    </tbody>
+		</table>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-12 col-sm-12">
+			<hr>
+			<h2>Google Maps</h2>
+			<hr>
+			<agm-map [latitude]="location.lat" [longitude]="location.lng" [zoom]="17">
+		  		<agm-marker [latitude]="location.lat" [longitude]="location.lng">
+		  			<agm-info-window>
+		  				<p>{{location.direcccion}}</p>
+		  				<small>{{location.lat}}, {{location.lng}}</small>
+		  			</agm-info-window>
+		  			<agm-circle [visible]="true" [latitude]="location.lat" [longitude]="location.lng" 
+				        [radius]="200"
+				        [fillColor]="'blue'"
+				        [circleDraggable]="false"
+				        [editable]="false">
+				    </agm-circle>
+		  		</agm-marker>
+			</agm-map>
+			<hr>
+		</div>
+	</div>
+</div>
+
+<div id="snackbar" [ngClass]="{'show': show }">{{ msg }}</div>
